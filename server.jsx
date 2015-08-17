@@ -28,7 +28,7 @@ app.use((req, res) => {
         <title>Isomorphic Redux Demo</title>
       </head>
       <body>
-        <div id="react-view"></div>
+        <div id="react-view">${componentHTML}</div>
         <script type="application/javascript" src="/bundle.js"></script>
       </body>
     </html>
