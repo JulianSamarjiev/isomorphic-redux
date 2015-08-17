@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class App extends React.Component {
+export default class AppView extends React.Component {
   render() {
     return (
       <div id="app-view">
