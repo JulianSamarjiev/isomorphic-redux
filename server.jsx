@@ -1,21 +1,29 @@
-import express from 'express';
-import React from 'react';
-import { Router } from 'react-router';
-import Location from 'react-router/lib/Location';
-import routes from 'routes';
+import express                          from 'express';
+import React                            from 'react';
+import { Router }                       from 'react-router';
+import Location                         from 'react-router/lib/Location';
+import routes                           from 'routes';
 
 const app = express();
 
-app.use((req, res) => {
+import { createStore, combineReducers } from 'redux';
+import { Provider }                     from 'react-redux';
+import * as reducers                    from 'reducers';
+
+app.use((req, res, next) => {
   const location = new Location(req.path, req.query);
+  const reducer = combineReducers(reducers);
+  const store = createStore(reducer);
 
   Router.run(routes, location, (err, routeState) => {
     if (err) return console.error(err);
 
-    if (!routeState) return res.status(404).end('404');
-
     const InitialComponent = (
-      <Router {...routeState} />
+      <Provider store={store}>
+        {() =>
+          <Router {...routeState} />
+        }
+      </Provider>
     );
 
     const componentHTML = React.renderToString(InitialComponent);
