@@ -3,12 +3,11 @@ import React                            from 'react';
 import { Router }                       from 'react-router';
 import Location                         from 'react-router/lib/Location';
 import routes                           from 'routes';
-
-const app = express();
-
 import { createStore, combineReducers } from 'redux';
 import { Provider }                     from 'react-redux';
 import * as reducers                    from 'reducers';
+
+const app = express();
 
 app.use((req, res, next) => {
   const location = new Location(req.path, req.query);
@@ -28,12 +27,18 @@ app.use((req, res, next) => {
 
     const componentHTML = React.renderToString(InitialComponent);
 
+    const initialState = store.getState();
+
     const HTML = `
     <!DOCTYPE html>
     <html>
       <head>
         <meta charset="utf-8">
         <title>Isomorphic Redux Demo</title>
+
+        <script type="application/javascript">
+          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
+        </script>
       </head>
       <body>
         <div id="react-view">${componentHTML}</div>
