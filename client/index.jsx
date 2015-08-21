@@ -25,6 +25,6 @@ React.render(
     {() =>
       <Router children={routes} history={history} />
     }
-  </Provider>
-  document.getElementById('react-view');
+  </Provider>,
+  document.getElementById('react-view')
 );

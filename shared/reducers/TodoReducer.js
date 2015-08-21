@@ -1,4 +1,4 @@
-import Imutable from 'immutable';
+import Immutable from 'immutable';
 
 const defaultState = new Immutable.List();
 
@@ -8,7 +8,7 @@ export default function todoReducer(state = defaultState, action) {
       return state.concat(action.text);
     case 'EDIT_TODO':
       return state.set(action.id, action.text);
-    case 'DELETE_TODO'
+    case 'DELETE_TODO':
       return state.delete(action.id);
     default:
       return state;
