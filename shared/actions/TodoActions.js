@@ -24,3 +24,10 @@ export function deleteTodo(id) {
     id
   };
 }
+
+export function getTodos() {
+  return {
+    type: 'GET_TODOS',
+    promise: request.get(BACKEND_URL)
+  }
+}

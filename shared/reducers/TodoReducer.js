@@ -10,6 +10,8 @@ export default function todoReducer(state = defaultState, action) {
       return state.set(action.id, action.text);
     case 'DELETE_TODO':
       return state.delete(action.id);
+    case 'GET_TODOS':
+      return state.concat(action.res.data);
     default:
       return state;
   }
