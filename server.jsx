@@ -3,25 +3,34 @@ import React                            from 'react';
 import { Router }                       from 'react-router';
 import Location                         from 'react-router/lib/Location';
 import routes                           from 'routes';
-import { createStore, combineReducers } from 'redux';
 import { Provider }                     from 'react-redux';
 import * as reducers                    from 'reducers';
+import promiseMiddleware                from 'lib/promiseMiddleware';
 import fetchComponentData               from 'lib/fetchComponentData';
+import { createStore,
+         combineReducers,
+         applyMiddleware }              from 'redux';
 
 const app = express();
 
-app.use((req, res, next) => {
+// So the example quote unquote 'production mode' works
+import fs from 'fs';
+app.use('/bundle.js', function (req, res) {
+  return fs.createReadStream('./dist/bundle.js').pipe(res);
+});
+
+app.use( (req, res) => {
   const location = new Location(req.path, req.query);
-  const reducer = combineReducers(reducers);
-  const store = createStore(reducer);
+  const reducer  = combineReducers(reducers);
+  const store    = applyMiddleware(promiseMiddleware)(createStore)(reducer);
 
   Router.run(routes, location, (err, routeState) => {
-    if (err) return console.error(err);
+    if(err) return console.error(err);
 
-    if (!routeState) return res.status(404).end('404');
+    if(!routeState) return res.status(404).end('404');
 
     function renderView() {
-      const InitialComponent = (
+      const InitialView = (
         <Provider store={store}>
           {() =>
             <Router {...routeState} />
@@ -29,7 +38,7 @@ app.use((req, res, next) => {
         </Provider>
       );
 
-      const componentHTML = React.renderToString(InitialComponent);
+      const componentHTML = React.renderToString(InitialView);
 
       const initialState = store.getState();
 
@@ -38,9 +47,9 @@ app.use((req, res, next) => {
       <html>
         <head>
           <meta charset="utf-8">
-          <title>Isomorphic Redux Demo</title>
+          <title>Redux Demo</title>
 
-          <script type="application/javascript">
+          <script>
             window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
           </script>
         </head>
@@ -57,7 +66,7 @@ app.use((req, res, next) => {
     fetchComponentData(store.dispatch, routeState.components, routeState.params)
       .then(renderView)
       .then(html => res.end(html))
-        .catch(err => res.end(err.message));
+      .catch(err => res.end(err.message));
   });
 });
 
