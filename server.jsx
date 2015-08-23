@@ -18,7 +18,7 @@ app.use((req, res, next) => {
   Router.run(routes, location, (err, routeState) => {
     if (err) return console.error(err);
 
-    if (!routeState) return res.status.(404).end('404');
+    if (!routeState) return res.status(404).end('404');
 
     function renderView() {
       const InitialComponent = (
