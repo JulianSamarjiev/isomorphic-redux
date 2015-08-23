@@ -1,10 +1,6 @@
 import React from 'react';
 
 export default class TodosView extends React.Component {
-  componentDidMount() {
-    this.props.getTodos();
-  }
-  
   handleDelete = (e) => {
     const id = Number(e.target.dataset.id);
 
